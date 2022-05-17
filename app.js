@@ -22,7 +22,7 @@ app.get('/hello', (req, res, next) => {
 })
 
 // connect to database
-mongoose.connect(`mongodb+srv://rezwan-test:rezwan-test-1234@mflix.s7byk.mongodb.net/employee_db?retryWrites=true&w=majority`);
+mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@mflix.s7byk.mongodb.net/employee_db?retryWrites=true&w=majority`);
 
 
 
