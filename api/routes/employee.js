@@ -77,9 +77,28 @@ router.patch('/:empId', async (req, res, next) => {
 
 router.delete('/:empId', (req, res, next) => {
     const id = req.params.empId;
-    try{}
+    try{
+        const result = Employee.findOneAndDelete({_id: Object(id)});
+        if(result){
+            res.status(200).json({
+                action: 'Delete',
+                msg: 'Content deleted successfully',
+                success: true
+            })
+        } else{
+            res.status(204).json({
+                action: 'Delete',
+                success: false,
+                msg: 'No content found'
+            })
+        }
+    }
     catch(err){
-        
+        res.status(500).json({
+            action: 'Delete',
+            success: false,
+            msg: 'Contend delete failed'
+        })
     }
 })
 
