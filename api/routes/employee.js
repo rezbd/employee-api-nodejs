@@ -41,11 +41,19 @@ router.post('/', async (req, res, next) => {
             image: req.body.image
         })
         const result = await employee.save();
-        res.status(201).json(result);
+        if(result){
+            res.status(201).json({
+                action: 'Create',
+                msg: 'Created user successfully',
+                body: result
+            });
+        }
     }
     catch(err){
         res.status(500).json({
-            error: err
+            action: 'Create',
+            msg: err.message,
+            body: err
         })
     }
 });
