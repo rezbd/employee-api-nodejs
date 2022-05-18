@@ -45,7 +45,7 @@ router.post('/', async (req, res, next) => {
         if(result){
             res.status(201).json({
                 action: 'Create',
-                msg: 'Created user successfully',
+                msg: 'Created Employee successfully',
                 body: result
             });
         }
@@ -107,7 +107,7 @@ router.post('/signup', (req, res, next) => {
         }
         else {
             return res.status(201).json({
-                message: "User added successfully"
+                message: "Employee added successfully"
             })
         }
     })

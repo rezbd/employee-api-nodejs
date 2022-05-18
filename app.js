@@ -7,6 +7,9 @@ const mongoose = require('mongoose');
 const employeeRoute = require('./api/routes/employee');
 const lateEntryRoute = require('./api/routes/lateEntry');
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 app.use(morgan('dev'));
 
 // extended false to keep it simple
