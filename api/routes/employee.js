@@ -34,6 +34,8 @@ router.get('/:empId', async (req, res, next) => {
     }
 })
 
+/* 
+* since there is a /sginup route. the following route is no loger necessary
 // create a new employee
 router.post('/', async (req, res, next) => {
     try{
@@ -59,7 +61,7 @@ router.post('/', async (req, res, next) => {
             body: err
         })
     }
-});
+}); */
 
 
 // user login api
