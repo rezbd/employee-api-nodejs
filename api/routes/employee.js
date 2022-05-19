@@ -8,6 +8,25 @@ dotenv.config();
 // imported user schema
 const Employee = require('../models/employee');
 
+
+// verify jwt
+function verifyJWT(req, res, next) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).send({ message: 'UnAuthorized access' });
+    }
+    const token = authHeader.split(' ')[1];
+    jwt.verify(token, process.env.TOKEN_SECRET, function (err, decoded) {
+      if (err) {
+        return res.status(403).send({ message: 'Forbidden access' })
+      }
+      req.decoded = decoded;
+      next();
+    });
+  }
+
+
+// get all users
 router.get('/', async (req, res, next) => {
     try{
         const user = await Employee.find()
@@ -19,6 +38,14 @@ router.get('/', async (req, res, next) => {
         })
     }
 });
+
+
+// experimental jwt route
+router.get('/hi', verifyJWT, (req, res, next) => {
+    res.json({
+        message: "Token works!"
+    })
+})
 
 // find an employee by id
 router.get('/:empId', async (req, res, next) => {
@@ -76,8 +103,10 @@ router.post('/login', (req, res, next) => {
             }
             else {
                 if(user.validPassword(req.body.password)) {
+                    const token = jwt.sign({ email: req.body.email }, process.env.TOKEN_SECRET, { expiresIn: '1h' })
                     return res.status(201).json({
-                        message: "User logged in"
+                        message: "User logged in",
+                        token: token
                     })
                 }
                 else{
