@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
+const {body, validationResult} = require('express-validator');
 dotenv.config();
 
 // imported user schema
@@ -96,30 +97,44 @@ router.post('/login', (req, res, next) => {
 
 
 // user signup api
-router.post('/signup', (req, res, next) => {
-    // creating empty user object
-    let newUser = new Employee();
-
-    // initialize newUser object with request data
-    newUser.name = req.body.name
-    newUser.email = req.body.email
-
-    // call setPassword function to hash password
-    newUser.setPassword(req.body.password)
-
-    // save newUser object to database
-    newUser.save((err, Employee) => {
-        if(err){
-            return res.status(400).json({
-                message: "Failed to add user."
-            });
+router.post('/signup',  body('email').isEmail(), body('password').isLength({ min: 6 }), (req, res, next) => {
+    try{
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            return res.status(400).json({ errors: errors.array() })
         }
-        else {
-            return res.status(201).json({
-                message: "Employee added successfully"
-            })
-        }
-    })
+        
+        // creating empty user object
+        let newUser = new Employee();
+
+        // initialize newUser object with request data
+        newUser.name = req.body.name
+        newUser.email = req.body.email
+
+        // call setPassword function to hash password
+        newUser.setPassword(req.body.password)
+
+        // save newUser object to database
+        newUser.save((err, Employee) => {
+            if(err){
+                return res.status(400).json({
+                    message: "Failed to add user."
+                });
+            }
+            else {
+                return res.status(201).json({
+                    message: "Employee added successfully"
+                })
+            }
+        })
+    }
+    catch(err){
+        res.status(500).json({
+            action: 'Login',
+            msg: err.message,
+            body: err
+        })
+    }
 })
 
 
