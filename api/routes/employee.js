@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const dotenv = require('dotenv');
+const jwt = require('jsonwebtoken');
 dotenv.config();
 
 // imported user schema
@@ -62,27 +63,35 @@ router.post('/', async (req, res, next) => {
 
 // user login api
 router.post('/login', (req, res, next) => {
-
-    // find user with requested email
-    Employee.findOne({email: req.body.email}, function(err, user) {
-        if(user === null){
-            return res.status(400).json({
-                message : "User not found."
-            });
-        }
-        else {
-            if(user.validPassword(req.body.password)) {
-                return res.status(201).json({
-                    message: "User logged in"
-                })
+    try{
+        // find user with requested email
+        Employee.findOne({email: req.body.email}, function(err, user) {
+            if(user === null){
+                return res.status(400).json({
+                    message : "User not found."
+                });
             }
-            else{
-                return res.status(400).send({
-                    message: "Wrong password"
-                })
+            else {
+                if(user.validPassword(req.body.password)) {
+                    return res.status(201).json({
+                        message: "User logged in"
+                    })
+                }
+                else{
+                    return res.status(400).json({
+                        message: "Wrong password"
+                    })
+                }
             }
+        })
         }
-    })
+    catch(err){
+        res.status(500).json({
+            action: 'Login',
+            msg: err.message,
+            body: err
+        })
+    }
 })
 
 
