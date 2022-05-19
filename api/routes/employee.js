@@ -170,7 +170,7 @@ router.post('/signup',  body('email').isEmail(), body('password').isLength({ min
 
 
 // update an employee
-router.patch('/:empId', async (req, res, next) => {
+router.patch('/:empId', verifyJWT, async (req, res, next) => {
     const id = req.params.empId;
     const user = req.body;
     try{
@@ -194,7 +194,7 @@ router.patch('/:empId', async (req, res, next) => {
     }
 })
 
-router.delete('/:empId', (req, res, next) => {
+router.delete('/:empId', verifyJWT, (req, res, next) => {
     const id = req.params.empId;
     try{
         const result = Employee.findOneAndDelete({_id: Object(id)});
