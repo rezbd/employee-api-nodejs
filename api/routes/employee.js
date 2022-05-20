@@ -1,29 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+const jwtAuth = require('../middlewares/jwtAuth');
 const signupValidator = require('../middlewares/signupValidator');
 const dotenv = require('dotenv');
 dotenv.config();
 
 // imported user schema
 const Employee = require('../models/employee');
-
-
-// verify jwt
-function verifyJWT(req, res, next) {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      return res.status(401).send({ message: 'UnAuthorized access' });
-    }
-    const token = authHeader.split(' ')[1];
-    jwt.verify(token, process.env.TOKEN_SECRET, function (err, decoded) {
-      if (err) {
-        return res.status(403).send({ message: 'Forbidden access' })
-      }
-      req.decoded = decoded;
-      next();
-    });
-  }
 
 
 // get all users
@@ -41,7 +25,7 @@ router.get('/', async (req, res, next) => {
 
 
 // experimental jwt route
-router.get('/hi', verifyJWT, (req, res, next) => {
+router.get('/hi', jwtAuth.verifyJWT, (req, res, next) => {
     res.json({
         message: "Token works!"
     })
@@ -165,7 +149,7 @@ router.post('/signup',  signupValidator.userValidator, (req, res, next) => {
 
 
 // update an employee
-router.patch('/:empId', verifyJWT, async (req, res, next) => {
+router.patch('/:empId', jwtAuth.verifyJWT, async (req, res, next) => {
     const id = req.params.empId;
     const user = req.body;
     try{
@@ -191,7 +175,7 @@ router.patch('/:empId', verifyJWT, async (req, res, next) => {
 
 
 // delete an user
-router.delete('/:empId', verifyJWT, (req, res, next) => {
+router.delete('/:empId', jwtAuth.verifyJWT, (req, res, next) => {
     const id = req.params.empId;
     try{
         const result = Employee.findOneAndDelete({_id: Object(id)});
