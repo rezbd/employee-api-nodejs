@@ -128,11 +128,19 @@ router.post('/signup',  signupValidator.userValidator, async (req, res, next) =>
         // save newUser object to database
         newUser.save((err, Employee) => {
             if(err){
-                return res.status(400).json({
-                    action: "signup",
-                    message: err.message,
-                    Error: err
-                });
+                if (err.message.split(" ")[0] == "E11000") {
+                    let a = err.message.split(" { ")[1].split(" ")[0];
+                    let b = a.replace(/:/gi, function () {
+                        return "".trim();
+                    });
+    
+                    return res.json({
+                        statusCode: 409,
+                        success: false,
+                        field_name: b,
+                        msg: "Already exists."
+                    });
+                }
             }
             else {
                 return res.status(201).json({
