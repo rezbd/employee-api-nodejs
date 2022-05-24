@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Late = require('../models/lateEntry');
+const verifyAdmin = require('../middlewares/verifyAdmin');
+const jwtAuth = require('../middlewares/jwtAuth')
 
-router.get('/', async (req, res, next) => {
+router.get('/all', jwtAuth.verifyJWT, verifyAdmin.isAdmin, async (req, res, next) => {
     try{
         const result = await Late.find();
         if(result){

@@ -3,6 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const jwtAuth = require('../middlewares/jwtAuth');
 const signupValidator = require('../middlewares/signupValidator');
+const verifyAdmin = require('../middlewares/verifyAdmin');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -87,7 +88,8 @@ router.post('/login', (req, res, next) => {
             }
             else {
                 if(user.validPassword(req.body.password)) {
-                    const token = jwt.sign({ email: req.body.email }, process.env.TOKEN_SECRET, { expiresIn: '1h' })
+                    console.log(user._id.toString());
+                    const token = jwt.sign({ email: req.body.email, id: user._id.toString() }, process.env.TOKEN_SECRET, { expiresIn: '1h' })
                     return res.status(201).json({
                         message: "User logged in",
                         token: token
@@ -112,10 +114,10 @@ router.post('/login', (req, res, next) => {
 
 
 // user signup api
-router.post('/signup',  signupValidator.userValidator, (req, res, next) => {
+router.post('/signup',  signupValidator.userValidator, async (req, res, next) => {
     try{        
         // creating empty user object
-        let newUser = new Employee();
+        let newUser = await new Employee();
 
         // initialize newUser object with request data
         newUser.name = req.body.name
@@ -198,6 +200,31 @@ router.delete('/:empId', jwtAuth.verifyJWT, (req, res, next) => {
             action: 'Delete',
             success: false,
             msg: 'Contend delete failed'
+        })
+    }
+})
+
+
+// make an employee admin
+router.patch('/admin/:empId', async (req, res, next) => {
+    const id = req.params.empId;
+    try{
+        const result = await Employee.findOneAndUpdate(
+            {_id: id},
+            {$set: {role: 'admin'}},
+            {new: true}
+        );
+        if(result){
+            res.status(200).json(result)
+        } else {
+            res.status(204).json({
+                message: "No user found"
+            })
+        }
+    }
+    catch(err){
+        res.status(500).json({
+            Error: err
         })
     }
 })

@@ -10,12 +10,16 @@ const employeeSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    isAdmin: {
-        type: Boolean,
-        required: false,
-        default: false
-    },
+    // isAdmin: {
+    //     type: Boolean,
+    //     required: false,
+    //     default: false
+    // },
     image: {
+        type: String,
+        required: false
+    },
+    role: {
         type: String,
         required: false
     },
