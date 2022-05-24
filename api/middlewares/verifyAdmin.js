@@ -20,7 +20,6 @@ module.exports = {
     
     isAdmin: async (req , res, next) => {  
         const requester = req.decoded ? req.decoded.id : undefined;
-        console.log(req.decoded);
         const requesterAccount = await Employee.findOne({_id: requester});
         if (requesterAccount.role === 'admin'){
             next();

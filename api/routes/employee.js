@@ -88,8 +88,7 @@ router.post('/login', (req, res, next) => {
             }
             else {
                 if(user.validPassword(req.body.password)) {
-                    console.log(user._id.toString());
-                    const token = jwt.sign({ email: req.body.email, id: user._id.toString() }, process.env.TOKEN_SECRET, { expiresIn: '1h' })
+                    const token = jwt.sign({ email: req.body.email, id: user._id }, process.env.TOKEN_SECRET, { expiresIn: '1h' })
                     return res.status(201).json({
                         message: "User logged in",
                         token: token
