@@ -129,11 +129,14 @@ router.post('/signup',  signupValidator.userValidator, async (req, res, next) =>
         newUser.save((err, Employee) => {
             if(err){
                 return res.status(400).json({
-                    message: "Failed to add user."
+                    action: "signup",
+                    message: err.message,
+                    Error: err
                 });
             }
             else {
                 return res.status(201).json({
+                    action: "signup",
                     message: "Employee added successfully"
                 })
             }
@@ -141,9 +144,10 @@ router.post('/signup',  signupValidator.userValidator, async (req, res, next) =>
     }
     catch(err){
         res.status(500).json({
-            action: 'Login',
+            action: 'signup',
+            success: false,
             msg: err.message,
-            body: err
+            Error: err
         })
     }
 })

@@ -8,13 +8,9 @@ const employeeSchema = mongoose.Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
-    // isAdmin: {
-    //     type: Boolean,
-    //     required: false,
-    //     default: false
-    // },
     image: {
         type: String,
         required: false
@@ -59,4 +55,4 @@ employeeSchema.methods.validPassword = function(password) {
 };
 
 
-module.exports = mongoose.model('Employee', employeeSchema, 'employee-collc');
+module.exports = mongoose.model('Employee', employeeSchema, 'employee-info');
