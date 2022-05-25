@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Leave = require('../models/leaveApplication');
+const verifyLogin = require('../middlewares/jwtAuth');
+const verifyAdmin = require('../middlewares/verifyAdmin');
 
 // Get all leave applications
 router.get('/all', async (req, res, next) => {
@@ -120,6 +122,42 @@ router.delete('/:applId', async (req, res, next) => {
         }
     }
     catch(err){}
+})
+
+
+// Leave will be approved or rejected by admin
+
+// admin can approve an application
+router.patch('/approve/:applId', verifyLogin.verifyJWT, verifyAdmin.isAdmin, async (req, res, next) => {
+    try{
+        const output = await Leave.findOneAndUpdate(
+            {_id: req.params.applId},
+            {$set: {applicationStatus: "approved"}},
+            {new: true}
+        );
+        if(output){
+            res.status(200).json({
+                action: 'Update',
+                success: true,
+                msg: 'Leave Application approved successfully',
+                body: output
+            })
+        } else {
+            res.status(204).json({
+                action: 'Update',
+                success: false,
+                msg: 'Leave application not found'
+            })
+        }
+    }
+    catch(err){
+        res.status(500).json({
+            action: 'Update',
+            success: false,
+            msg: err.message,
+            Error: err
+        })
+    }
 })
 
 

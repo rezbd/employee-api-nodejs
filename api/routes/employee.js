@@ -3,7 +3,6 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const jwtAuth = require('../middlewares/jwtAuth');
 const signupValidator = require('../middlewares/signupValidator');
-const verifyAdmin = require('../middlewares/verifyAdmin');
 const dotenv = require('dotenv');
 dotenv.config();
 
