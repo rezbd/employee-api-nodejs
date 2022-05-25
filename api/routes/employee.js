@@ -226,15 +226,25 @@ router.patch('/admin/:empId', async (req, res, next) => {
             {new: true}
         );
         if(result){
-            res.status(200).json(result)
+            res.status(200).json({
+                action: "Update",
+                success: true,
+                message: "made an employee admin successfully",
+                body: result
+            })
         } else {
             res.status(204).json({
+                action: "Update",
+                success: false,
                 message: "No user found"
             })
         }
     }
     catch(err){
         res.status(500).json({
+            action: "Update",
+            success: false,
+            msg: err.message,
             Error: err
         })
     }

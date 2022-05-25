@@ -62,4 +62,40 @@ router.post('/', async (req, res, next) => {
 })
 
 
+// update a leave application
+router.patch('/:applId', async (req, res, next) => {
+    const id = req.params.applId;
+    const applId = req.body;
+    try{
+        const result = await Leave.findOneAndUpdate(
+            {_id: id},
+            {$set: applId},
+            {new: true}
+        )
+        if(result){
+            res.status(200).json({
+                action: "Update",
+                success: true,
+                msg: "updated leave application successfully",
+                body: result
+            })
+        } else {
+            res.status(204).json({
+                action: "Update",
+                success: false,
+                msg: "No leave application found"
+            })
+        }
+    }
+    catch(err){
+        res.status(500).json({
+            action: "Update",
+            success: false,
+            msg: err.message,
+            Error: err
+        })
+    }
+})
+
+
 module.exports = router;

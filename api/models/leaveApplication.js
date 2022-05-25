@@ -3,9 +3,7 @@ const mongoose = require('mongoose');
 const leaveApplication = mongoose.Schema({
     employeeId: {
         type: String,
-        required: true,
-        index: true,
-        unique: true
+        required: false
     },
     fromDate: {
         type: String,
