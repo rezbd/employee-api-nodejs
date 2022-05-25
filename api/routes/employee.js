@@ -25,7 +25,7 @@ router.get('/', async (req, res, next) => {
 });
 
 
-// experimental jwt route
+// experimental protected route
 router.get('/hi', jwtAuth.verifyJWT, (req, res, next) => {
     res.json({
         message: "Token works!"

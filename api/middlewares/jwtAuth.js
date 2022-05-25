@@ -9,7 +9,7 @@ module.exports = {
         const token = authHeader.split(' ')[1];
         jwt.verify(token, process.env.TOKEN_SECRET, function (err, decoded) {
           if (err) {
-            return res.status(403).send({ message: 'Forbidden access' })
+            return res.status(403).send({ message: 'Forbidden access. You need to login' })
           }
           req.decoded = decoded;
           next();
