@@ -98,4 +98,29 @@ router.patch('/:applId', async (req, res, next) => {
 })
 
 
+// delete a leave application
+router.delete('/:applId', async (req, res, next) => {
+    const id = req.params.applId;
+    try{
+        const result = await Leave.findOneAndDelete(
+            {_id: id}
+        )
+        if(result){
+            res.status(200).json({
+                action: 'Delete',
+                success: true,
+                body: result
+            })
+        } else {
+            res.status(204).json({
+                action: 'Delete',
+                success: false,
+                msg: "No leave application found"
+            })
+        }
+    }
+    catch(err){}
+})
+
+
 module.exports = router;
