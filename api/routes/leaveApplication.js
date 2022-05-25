@@ -161,4 +161,39 @@ router.patch('/approve/:applId', verifyLogin.verifyJWT, verifyAdmin.isAdmin, asy
 })
 
 
+// admin can reject an application
+router.patch('/reject/:applId', verifyLogin.verifyJWT, verifyAdmin.isAdmin, async (req, res, next) => {
+    try{
+        const output = await Leave.findOneAndUpdate(
+            {_id: req.params.applId},
+            {$set: {applicationStatus: "rejected"}},
+            {new: true}
+        );
+        if(output){
+            res.status(200).json({
+                action: 'Update',
+                success: true,
+                msg: 'Leave Application rejected successfully',
+                body: output
+            })
+        } else {
+            res.status(204).json({
+                action: 'Update',
+                success: false,
+                msg: 'Leave application not found'
+            })
+        }
+    }
+    catch(err){
+        res.status(500).json({
+            action: 'Update',
+            success: false,
+            msg: err.message,
+            Error: err
+        })
+    }
+})
+
+
+
 module.exports = router;
