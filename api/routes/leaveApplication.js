@@ -5,7 +5,7 @@ const verifyLogin = require('../middlewares/jwtAuth');
 const verifyAdmin = require('../middlewares/verifyAdmin');
 
 // Get all leave applications
-router.get('/all', async (req, res, next) => {
+router.get('/all', verifyLogin.verifyJWT, verifyAdmin.isAdmin, async (req, res, next) => {
     try{
         const result = await Leave.find();
         if(result){

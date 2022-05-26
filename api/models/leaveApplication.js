@@ -19,6 +19,7 @@ const leaveApplication = mongoose.Schema({
     },
     applicationStatus: {
         type: String,
+        enum: ['Pending', 'Approved', 'Rejected'],
         default: 'pending'
     }
 }, { timestamps: true })

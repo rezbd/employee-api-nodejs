@@ -21,6 +21,6 @@ const lateEntryMsg = mongoose.Schema({
         type: String,
         required: true
     }
-})
+}, { timestamps: true })
 
 module.exports = mongoose.model('LateEntryMsg', lateEntryMsg, 'late_entry_msg');
