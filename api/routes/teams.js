@@ -95,4 +95,75 @@ router.post('/', async (req, res, next) => {
         })
     }
 })
+
+
+// router for updating a team
+router.patch('/:id', async (req, res, next) => {
+    const id = req.params.id;
+    const team = req.body;
+    try {
+        const result = await Teams.findOneAndUpdate(
+            {_id: id},
+            {$set: team},
+            {new: true}
+        );
+        if (result) {
+            res.status(200).json({
+                action: 'Update',
+                success: true,
+                msg: 'Updated Successfully',
+                body: result
+            })
+        } else {
+            res.status(204).json({
+                action: 'Update',
+                success: false,
+                msg: 'No content found',
+                body: {}
+            })
+        }
+    } catch (err) {
+        res.status(500).json({
+            action: 'Update',
+            success: false,
+            msg: 'Update Failed',
+            Error: err
+        })
+    }
+})
+
+
+// router for deleting a team
+router.delete('/:id', async (req, res, next) => {
+    const id = req.params.id;
+    try {
+        const result = await Teams.findOneAndDelete(
+            {_id: id}
+        );
+        if (result) {
+            res.status(200).json({
+                action: 'Delete',
+                success: true,
+                msg: 'Deleted Successfully',
+                body: result
+            })
+        } else {
+            res.status(204).json({
+                action: 'Delete',
+                success: false,
+                msg: 'No content found',
+                body: {}
+            })
+        }
+    } catch (err) {
+        res.status(500).json({
+            action: 'Delete',
+            success: false,
+            msg: 'Delete Failed',
+            Error: err
+        })
+    }
+})
+
+
 module.exports = router;
