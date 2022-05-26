@@ -5,10 +5,17 @@ const employeeTeams = mongoose.Schema({
         type: String,
         required: true
     },
-    teamMembers: {
-        type: Array,
-    }
+    teamMembers: [{
+        _id: {
+            type: String,
+            ref: 'Employee'
+        },
+        email: {
+            type: String,
+            ref: 'Employee'
+        },
+    }]
 });
 
 
-module.exports = mongoose.exports('Teams', employeeTeams, 'employee_teams');
+module.exports = mongoose.model('Teams', employeeTeams, 'employee_teams');

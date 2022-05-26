@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const employeeRoute = require('./api/routes/employee');
 const lateEntryRoute = require('./api/routes/lateEntry');
 const leaveApplicationRoute = require('./api/routes/leaveApplication');
+const teamsRoute = require('./api/routes/teams');
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -21,6 +22,7 @@ app.use(bodyParser.json());
 app.use('/employee', employeeRoute)
 app.use('/late', lateEntryRoute);
 app.use('/leave', leaveApplicationRoute);
+app.use('/teams', teamsRoute);
 
 app.get('/hello', (req, res, next) => {
     res.json({message: "works!"});
