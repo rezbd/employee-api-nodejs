@@ -100,11 +100,58 @@ router.post('/', async (req, res, next) => {
 // router for updating a team
 router.patch('/:id', async (req, res, next) => {
     const id = req.params.id;
-    const team = req.body;
+    const {member, ...team} = req.body;
     try {
         const result = await Teams.findOneAndUpdate(
             {_id: id},
-            {$set: team},
+            {
+                $set: team,
+                $push: {
+                    teamMembers: member
+                }
+            },
+            {new: true}
+        );
+        if (result) {
+            res.status(200).json({
+                action: 'Update',
+                success: true,
+                msg: 'Updated Successfully',
+                body: result
+            })
+        } else {
+            res.status(204).json({
+                action: 'Update',
+                success: false,
+                msg: 'No content found',
+                body: {}
+            })
+        }
+    } catch (err) {
+        res.status(500).json({
+            action: 'Update',
+            success: false,
+            msg: 'Update Failed',
+            Error: err
+        })
+    }
+})
+
+
+// router for removing a member from a team
+
+router.patch('/remove/:id', async (req, res, next) => {
+    const id = req.params.id;
+    const {member, ...team} = req.body;
+    try {
+        const result = await Teams.findOneAndUpdate(
+            {_id: id},
+            {
+                $set: team,
+                $pull: {
+                    teamMembers: member
+                }
+            },
             {new: true}
         );
         if (result) {
