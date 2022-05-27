@@ -139,17 +139,15 @@ router.patch('/:id', async (req, res, next) => {
 
 
 // router for removing a member from a team
-
 router.patch('/remove/:id', async (req, res, next) => {
     const id = req.params.id;
-    const {member, ...team} = req.body;
+    const {member} = req.body;
     try {
         const result = await Teams.findOneAndUpdate(
             {_id: id},
             {
-                $set: team,
                 $pull: {
-                    teamMembers: member
+                    teamMembers: {_id: member}
                 }
             },
             {new: true}
