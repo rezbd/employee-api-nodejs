@@ -99,16 +99,16 @@ router.post('/', async (req, res, next) => {
 })
 
 
-// router for uadding a member to a team
+// router to add a member to a team
 router.patch('/:id', async (req, res, next) => {
     const id = req.params.id;
     const member = req.body;
     try {
         const result = await Teams.updateOne(
-            {_id: mongoose.Types.ObjectId(id)},
+            // {_id: mongoose.Types.ObjectId(id)},
             {
-                $push: {
-                    teamMembers: member
+                $addToSet: {
+                    teamMembers: member,
                 }
             }
         );

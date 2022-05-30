@@ -21,6 +21,7 @@ const employeeTeams = mongoose.Schema({
         }
     },
     teamMembers: [{
+        _id: false,
         emp_id: {
             type: Schema.Types.ObjectId,
             ref: 'Employee'
