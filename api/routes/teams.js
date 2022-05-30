@@ -3,6 +3,7 @@ const router = express.Router();
 const Teams = require('../models/teams');
 const verifyLogin = require('../middlewares/jwtAuth');
 const verifyAdmin = require('../middlewares/verifyAdmin');
+const mongoose = require('mongoose');
 
 // router for getting all teams
 router.get('/all', async (req, res, next) => {
@@ -98,21 +99,20 @@ router.post('/', async (req, res, next) => {
 })
 
 
-// router for updating a team
+// router for uadding a member to a team
 router.patch('/:id', async (req, res, next) => {
     const id = req.params.id;
-    const {member, ...team} = req.body;
+    const member = req.body;
     try {
-        const result = await Teams.findOneAndUpdate(
-            {_id: id},
+        const result = await Teams.updateOne(
+            {_id: mongoose.Types.ObjectId(id)},
             {
-                $set: team,
                 $push: {
                     teamMembers: member
                 }
-            },
-            {new: true}
+            }
         );
+        console.log(result);
         if (result) {
             res.status(200).json({
                 action: 'Update',
@@ -138,55 +138,21 @@ router.patch('/:id', async (req, res, next) => {
     }
 })
 
-// router for adding a mmember to a team
-router.patch('/:id/:member', async (req, res, next) => {
-    const id = req.params.id;
-    const member = req.params.member;
-    try {
-        const result = await Teams.findOneAndUpdate(
-            {_id: id},
-            {$push: {teamMembers: member}},
-            {new: true}
-        );
-        if (result) {
-            res.status(200).json({
-                action: 'Update',
-                success: true,
-                msg: 'Updated Successfully',
-                body: result
-            })
-        } else {
-            res.status(204).json({
-                action: 'Update',
-                success: false,
-                msg: 'No content found',
-                body: {}
-            })
-        }
-    } catch (err) {
-        res.status(500).json({
-            action: 'Update',
-            success: false,
-            msg: 'Update Failed',
-            Error: err
-        })
-    }
-})
+
 
 
 // router for removing a member from a team
 router.patch('/remove/:id', async (req, res, next) => {
     const id = req.params.id;
-    const {member} = req.body;
+    const member = req.body;
     try {
-        const result = await Teams.findOneAndUpdate(
-            {_id: id},
+        const result = await Teams.updateOne(
+            {_id: mongoose.Types.ObjectId(id)},
             {
                 $pull: {
-                    teamMembers: {_id: member}
+                    teamMembers:  member
                 }
-            },
-            {new: true}
+            }
         );
         if (result) {
             res.status(200).json({
