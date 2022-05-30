@@ -21,7 +21,7 @@ const employeeSchema = mongoose.Schema({
     },
     hash: String,
     salt: String
-})
+}, { timestamps: true })
 
 
 // Method to set salt and hash the password for a user

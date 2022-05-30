@@ -68,7 +68,8 @@ router.post('/', async (req, res, next) => {
     try {
         const team = new Teams({
             teamName: req.body.teamName,
-            teamMembers: req.body.teamMembers
+            teamMembers: req.body.teamMembers,
+            teamLeader: req.body.teamLeader
         })
         if(team){
             const result = await team.save();
@@ -110,6 +111,41 @@ router.patch('/:id', async (req, res, next) => {
                     teamMembers: member
                 }
             },
+            {new: true}
+        );
+        if (result) {
+            res.status(200).json({
+                action: 'Update',
+                success: true,
+                msg: 'Updated Successfully',
+                body: result
+            })
+        } else {
+            res.status(204).json({
+                action: 'Update',
+                success: false,
+                msg: 'No content found',
+                body: {}
+            })
+        }
+    } catch (err) {
+        res.status(500).json({
+            action: 'Update',
+            success: false,
+            msg: 'Update Failed',
+            Error: err
+        })
+    }
+})
+
+// router for adding a mmember to a team
+router.patch('/:id/:member', async (req, res, next) => {
+    const id = req.params.id;
+    const member = req.params.member;
+    try {
+        const result = await Teams.findOneAndUpdate(
+            {_id: id},
+            {$push: {teamMembers: member}},
             {new: true}
         );
         if (result) {
