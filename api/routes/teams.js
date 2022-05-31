@@ -105,7 +105,7 @@ router.patch('/:id', async (req, res, next) => {
     const member = req.body;
     try {
         const result = await Teams.updateOne(
-            // {_id: mongoose.Types.ObjectId(id)},
+            {_id: mongoose.Types.ObjectId(id)},
             {
                 $addToSet: {
                     teamMembers: member,
