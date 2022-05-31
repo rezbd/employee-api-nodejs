@@ -99,18 +99,37 @@ router.post('/', async (req, res, next) => {
 })
 
 
-// router to add a member to a team
+// router to add a member to a team or edit a team
 router.patch('/:id', async (req, res, next) => {
     const id = req.params.id;
-    const member = req.body;
+    const member = {
+        emp_id : req.body.emp_id,
+        email : req.body.email
+    }
+    const team = req.body;
+
+    let output
+    if(!member.emp_id){
+        output = {
+            $set: {
+                teamName: team.teamName,
+                teamLeader: team.teamLeader
+            }
+        }
+    } else {
+        output = {
+            $addToSet: {
+                teamMembers: member
+            }
+        }
+    }
+
+    console.log(output);
+
     try {
         const result = await Teams.updateOne(
             {_id: mongoose.Types.ObjectId(id)},
-            {
-                $addToSet: {
-                    teamMembers: member,
-                }
-            }
+            output
         );
         console.log(result);
         if (result) {
