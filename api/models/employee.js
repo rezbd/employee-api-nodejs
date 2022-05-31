@@ -16,8 +16,7 @@ const employeeSchema = mongoose.Schema({
         required: false
     },
     role: {
-        type: String,
-        required: false
+        type: String
     },
     hash: String,
     salt: String

@@ -124,14 +124,11 @@ router.patch('/:id', async (req, res, next) => {
         }
     }
 
-    console.log(output);
-
     try {
         const result = await Teams.updateOne(
             {_id: mongoose.Types.ObjectId(id)},
             output
         );
-        console.log(result);
         if (result) {
             res.status(200).json({
                 action: 'Update',

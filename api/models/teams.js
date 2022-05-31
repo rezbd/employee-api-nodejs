@@ -6,20 +6,6 @@ const employeeTeams = mongoose.Schema({
         type: String,
         required: true
     },
-    teamLeader: {
-        emp_id: {
-            type: Schema.Types.ObjectId,
-            ref: 'Employee'
-        },
-        name: {
-            type: String,
-            ref: 'Employee'
-        },
-        email: {
-            type: String,
-            ref: 'Employee'
-        }
-    },
     teamMembers: [{
         _id: false,
         emp_id: {
@@ -31,6 +17,10 @@ const employeeTeams = mongoose.Schema({
             ref: 'Employee'
         },
         email: {
+            type: String,
+            ref: 'Employee'
+        },
+        role: {
             type: String,
             ref: 'Employee'
         }

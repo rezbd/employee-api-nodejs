@@ -1,0 +1,35 @@
+Project Manager:
+    Rohan Ranjan
+
+Backend:
+    Sree Pream Ronjan Deb
+    Azharul Islam
+    Mihrab Miah
+    Kumol Kantho Bhoumik
+    Sunny Chondra Saha
+    Sheikh Shahinur Rahman Shapon
+    A H M Rezwanur Rakib Chy
+
+Frontend:
+    Rakesh Singh
+    Dipen Kumar Das
+    Mustafizur Rahman Khan
+    MD Shah Noor Khan
+    MD. Hafizur Rahman
+
+qa:
+    MD Nuruzzaman Akash
+    Prianka Rani Nath
+    Narayan Das Nitol
+    Sheikh Tasmia Raida Sunna
+    Fahima Akter Any
+
+roles:
+    senior backend engineer
+    backend engineer
+    junior backend engineer
+    trainee backend engineer
+
+    senior frontend engineer
+    frontend engineer
+    junior frontend engineer
