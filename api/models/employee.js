@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const crypto = require('crypto');
 
 const employeeSchema = mongoose.Schema({
+    userID: {
+        type: String,
+        required: true
+    },
     name: {
         type: String,
         required: true
@@ -16,6 +20,10 @@ const employeeSchema = mongoose.Schema({
         required: false
     },
     role: {
+        type: String,
+        required: false
+    },
+    designation: {
         type: String
     },
     hash: String,

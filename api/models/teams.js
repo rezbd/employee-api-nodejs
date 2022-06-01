@@ -9,7 +9,7 @@ const employeeTeams = mongoose.Schema({
     teamMembers: [{
         _id: false,
         emp_id: {
-            type: Schema.Types.ObjectId,
+            type: String,
             ref: 'Employee'
         },
         name: {
@@ -20,7 +20,7 @@ const employeeTeams = mongoose.Schema({
             type: String,
             ref: 'Employee'
         },
-        role: {
+        designation: {
             type: String,
             ref: 'Employee'
         }

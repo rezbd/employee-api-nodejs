@@ -69,8 +69,7 @@ router.post('/', async (req, res, next) => {
     try {
         const team = new Teams({
             teamName: req.body.teamName,
-            teamMembers: req.body.teamMembers,
-            teamLeader: req.body.teamLeader
+            teamMembers: req.body.teamMembers
         })
         if(team){
             const result = await team.save();
@@ -104,7 +103,9 @@ router.patch('/:id', async (req, res, next) => {
     const id = req.params.id;
     const member = {
         emp_id : req.body.emp_id,
-        email : req.body.email
+        name : req.body.name,
+        email : req.body.email,
+        designation : req.body.designation
     }
     const team = req.body;
 
@@ -112,8 +113,7 @@ router.patch('/:id', async (req, res, next) => {
     if(!member.emp_id){
         output = {
             $set: {
-                teamName: team.teamName,
-                teamLeader: team.teamLeader
+                teamName: team.teamName
             }
         }
     } else {

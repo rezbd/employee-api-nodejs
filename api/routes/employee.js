@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const jwtAuth = require('../middlewares/jwtAuth');
 const signupValidator = require('../middlewares/signupValidator');
 const dotenv = require('dotenv');
+const mongoose = require('mongoose');
 dotenv.config();
 
 // imported user schema
@@ -118,8 +119,11 @@ router.post('/signup',  signupValidator.userValidator, async (req, res, next) =>
         let newUser = await new Employee();
 
         // initialize newUser object with request data
+        newUser._id = new mongoose.Types.ObjectId();
+        newUser.userID = newUser._id;
         newUser.name = req.body.name
         newUser.email = req.body.email
+        newUser.designation = req.body.designation
 
         // call setPassword function to hash password
         newUser.setPassword(req.body.password)
