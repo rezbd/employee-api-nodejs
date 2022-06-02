@@ -202,9 +202,11 @@ router.patch('/desig/:teamId', async (req, res, next) => {
     try {
         const result = await Teams.updateOne(
             {_id: mongoose.Types.ObjectId(teamId)},
-            {$set: {
+            {
+                $set: {
                 "teamMembers.$[].designation": designation
-            }}
+                }
+            }
         );
         if (result) {
             res.status(200).json({
