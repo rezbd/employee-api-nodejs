@@ -198,7 +198,6 @@ router.patch('/des/:teamId/:empId', async (req, res, next) => {
 router.patch('/desig/:teamId', async (req, res, next) => {
     const teamId = req.params.teamId;
     const designation = req.body.designation;
-    console.log(teamId, designation)
 
     try {
         const result = await Teams.updateOne(
