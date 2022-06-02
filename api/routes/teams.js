@@ -155,7 +155,73 @@ router.patch('/:id', async (req, res, next) => {
 })
 
 
+// query to change only designation of any of teamMembers
+router.patch('/:teamId/:empId', async (req, res, next) => {
+    const teamId = req.params.teamId;
+    const empId = req.params.empId;
+    const designation = req.body.designation;
 
+    try {
+        const result = await Teams.updateOne(
+            {_id: mongoose.Types.ObjectId(teamId), "teamMembers.emp_id": empId},
+            {$set: {
+                "teamMembers.$.designation": designation
+            }}
+        );
+        if (result) {
+            res.status(200).json({
+                action: 'Update',
+                success: true,
+                msg: 'Updated Successfully',
+                body: result
+            })
+        } else {
+            res.status(204).json({
+                action: 'Update',
+                success: false,
+                msg: 'No content found',
+                body: {}
+            })
+        }
+    } catch (err) {
+        res.status(500).json({
+            action: 'Update',
+            success: false,
+            msg: 'Update Failed',
+            Error: err
+        })
+    }
+})
+
+// router to delete a team
+router.delete('/:id', async (req, res, next) => {
+    const id = req.params.id;
+    try {
+        const result = await Teams.deleteOne({_id: mongoose.Types.ObjectId(id)});
+        if (result) {
+            res.status(200).json({
+                action: 'Delete',
+                success: true,
+                msg: 'Deleted Successfully',
+                body: result
+            })
+        } else {
+            res.status(204).json({
+                action: 'Delete',
+                success: false,
+                msg: 'No content found',
+                body: {}
+            })
+        }
+    } catch (err) {
+        res.status(500).json({
+            action: 'Delete',
+            success: false,
+            msg: 'Delete Failed',
+            Error: err
+        })
+    }
+})
 
 // router for removing a member from a team
 router.patch('/remove/:id', async (req, res, next) => {
