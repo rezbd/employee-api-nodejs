@@ -156,7 +156,7 @@ router.patch('/:id', async (req, res, next) => {
 
 
 // query to change only designation of any of teamMembers
-router.patch('/:teamId/:empId', async (req, res, next) => {
+router.patch('/des/:teamId/:empId', async (req, res, next) => {
     const teamId = req.params.teamId;
     const empId = req.params.empId;
     const designation = req.body.designation;
@@ -192,6 +192,46 @@ router.patch('/:teamId/:empId', async (req, res, next) => {
         })
     }
 })
+
+
+// query to change designation of all teamMembers
+router.patch('/desig/:teamId', async (req, res, next) => {
+    const teamId = req.params.teamId;
+    const designation = req.body.designation;
+    console.log(teamId, designation)
+
+    try {
+        const result = await Teams.updateOne(
+            {_id: mongoose.Types.ObjectId(teamId)},
+            {$set: {
+                "teamMembers.$[].designation": designation
+            }}
+        );
+        if (result) {
+            res.status(200).json({
+                action: 'Update',
+                success: true,
+                msg: 'Updated Successfully',
+                body: result
+            })
+        } else {
+            res.status(204).json({
+                action: 'Update',
+                success: false,
+                msg: 'No content found',
+                body: {}
+            })
+        }
+    } catch (err) {
+        res.status(500).json({
+            action: 'Update',
+            success: false,
+            msg: 'Update Failed',
+            Error: err
+        })
+    }
+})
+
 
 // router to delete a team
 router.delete('/:id', async (req, res, next) => {
