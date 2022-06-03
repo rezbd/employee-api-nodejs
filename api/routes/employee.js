@@ -124,6 +124,8 @@ router.post('/signup',  signupValidator.userValidator, async (req, res, next) =>
         newUser.name = req.body.name
         newUser.email = req.body.email
         newUser.designation = req.body.designation
+        newUser.mobile = req.body.mobile
+        newUser.location = req.body.location
 
         // call setPassword function to hash password
         newUser.setPassword(req.body.password)

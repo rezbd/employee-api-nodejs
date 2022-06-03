@@ -336,4 +336,67 @@ router.delete('/:id', async (req, res, next) => {
 })
 
 
+// show all team member info from employee-info collection
+router.get('/members/:id', async (req, res, next) => {
+    const id = req.params.id;
+    try {
+        const result = await Teams.aggregate([
+            {
+                $match: {
+                    _id: mongoose.Types.ObjectId(id)
+                }
+            },
+            {
+                $unwind: "$teamMembers"
+            },
+            {
+                $lookup: {
+                    from: 'employee-info',
+                    localField: 'teamMembers.emp_id',
+                    foreignField: 'userID',
+                    as: 'employeeDetails'
+                }
+            },
+            {
+                $unwind: '$employeeDetails'
+            },
+            {
+                $group: {
+                    _id: "$employeeDetails.userID",
+                    teamName: {$first: "$teamName"},
+                    employeeID: {$first: "$employeeDetails.userID"},
+                    name: {$first: "$employeeDetails.name"},
+                    email: {$first: "$employeeDetails.email"},
+                    mobile: {$first: "$employeeDetails.mobile"},
+                    designation: {$first: "$employeeDetails.designation"},
+                    location: {$first: "$employeeDetails.location"}
+                }
+            }
+        ]);
+        if (result) {
+            res.status(200).json({
+                action: 'Read',
+                success: true,
+                msg: 'Read Successfully',
+                body: result
+            })
+        } else {
+            res.status(204).json({
+                action: 'Read',
+                success: false,
+                msg: 'No content found',
+                body: {}
+            })
+        }
+    } catch (err) {
+        res.status(500).json({
+            action: 'Read',
+            success: false,
+            msg: 'Read Failed',
+            Error: err
+        })
+    }
+})
+
+
 module.exports = router;

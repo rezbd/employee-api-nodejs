@@ -26,6 +26,12 @@ const employeeSchema = mongoose.Schema({
     designation: {
         type: String
     },
+    mobile: {
+        type: String
+    },
+    location: {
+        type: String
+    },
     hash: String,
     salt: String
 }, { timestamps: true })
