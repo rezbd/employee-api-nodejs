@@ -336,7 +336,7 @@ router.delete('/:id', async (req, res, next) => {
 })
 
 
-// show all team member info from employee-info collection
+// show all team member info from employee-info collection (aggregation)
 router.get('/members/:id', async (req, res, next) => {
     const id = req.params.id;
     try {

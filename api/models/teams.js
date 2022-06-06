@@ -18,7 +18,8 @@ const employeeTeams = mongoose.Schema({
         },
         email: {
             type: String,
-            ref: 'Employee'
+            ref: 'Employee',
+            required: false
         },
         designation: {
             type: String,
