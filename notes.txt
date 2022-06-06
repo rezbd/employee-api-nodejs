@@ -1,0 +1,14 @@
+
+// function to calculate between two times
+
+const dt1 = new Date("June 6, 2022 10:11");
+const dt2 = new Date("June 6, 2022 13:25");
+
+function diff_minutes(dt2, dt1) 
+ {
+  let diff =(dt2.getTime() - dt1.getTime()) / 1000;
+  diff /= 60;
+  return Math.abs(Math.round(diff));
+ }
+
+console.log(diff_minutes(dt1, dt2));

@@ -7,8 +7,10 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 dotenv.config();
 
-// imported user schema
+// user schema
 const Employee = require('../models/employee');
+// employee activity schema
+const Activity = require('../models/dailyActivity');
 
 
 // get all users
@@ -254,5 +256,57 @@ router.patch('/admin/:empId', async (req, res, next) => {
         })
     }
 })
+
+
+/* 
+    routes for daily employee activity
+*/
+
+// post an employee activity
+router.post('/activity', async (req, res, next) => {
+    try{
+        const check_in_time = new Date(req.body.check_in_time);
+        const check_out_time = new Date(req.body.check_out_time);
+        const lunch_break_start = new Date(req.body.lunch_break_start);
+        const lunch_break_end = new Date(req.body.lunch_break_end);
+        const tea_break_start = new Date(req.body.tea_break_start);
+        const tea_break_end = new Date(req.body.tea_break_end);
+
+        const lunch_break = lunch_break_end.getTime() - lunch_break_start.getTime();
+        const tea_break = tea_break_end.getTime() - tea_break_start.getTime();
+
+        const total_work_time = check_out_time.getTime() - check_in_time.getTime();
+        const total_work_time_without_breaks = total_work_time - lunch_break - tea_break;
+        const total_work_time_without_breaks_in_hours = total_work_time_without_breaks / 1000 / 60 / 60;
+        const total_break_time = lunch_break + tea_break;
+        const total_break_time_in_hours = total_break_time / 1000 / 60 / 60;
+
+        const activity = new Activity({
+            _id: new mongoose.Types.ObjectId(),
+            employee_id: req.body.employee_id,
+            employee_name: req.body.employee_name,
+            employee_email: req.body.employee_email,
+            date: req.body.date,
+            total_actual_work_time: total_work_time_without_breaks_in_hours,
+            total_break_time: total_break_time_in_hours
+        })
+        const result = await activity.save();
+        if(result){
+            res.status(201).json({
+                action: 'Create',
+                msg: 'Created Activity successfully',
+                body: result
+            });
+        }
+    }
+    catch(err){
+        res.status(500).json({
+            action: 'Create',
+            msg: err.message,
+            body: err
+        })
+    }
+})
+
 
 module.exports = router;
