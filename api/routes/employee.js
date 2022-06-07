@@ -5,6 +5,7 @@ const jwtAuth = require('../middlewares/jwtAuth');
 const signupValidator = require('../middlewares/signupValidator');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const moment = require('moment');
 dotenv.config();
 
 // user schema
@@ -277,9 +278,14 @@ router.post('/activity', async (req, res, next) => {
 
         const total_work_time = check_out_time.getTime() - check_in_time.getTime();
         const total_work_time_without_breaks = total_work_time - lunch_break - tea_break;
-        const total_work_time_without_breaks_in_hours = total_work_time_without_breaks / 1000 / 60 / 60;
+        
+        let total_work_time_without_breaks_in_hours = total_work_time_without_breaks / 1000 / 60 / 60;
+        total_work_time_without_breaks_in_hours = total_work_time_without_breaks_in_hours.toFixed(2);
+
         const total_break_time = lunch_break + tea_break;
-        const total_break_time_in_hours = total_break_time / 1000 / 60 / 60;
+        
+        let total_break_time_in_hours = total_break_time / 1000 / 60 / 60;
+        total_break_time_in_hours = total_break_time_in_hours.toFixed(2);
 
         const activity = new Activity({
             _id: new mongoose.Types.ObjectId(),
@@ -302,6 +308,80 @@ router.post('/activity', async (req, res, next) => {
     catch(err){
         res.status(500).json({
             action: 'Create',
+            msg: err.message,
+            body: err
+        })
+    }
+})
+
+
+// post an employee activity using momentjs
+router.post('/activity/moment', async (req, res, next) => {
+    try{
+        const check_in_time = moment(req.body.check_in_time);
+        const check_out_time = moment(req.body.check_out_time);
+        const lunch_break_start = moment(req.body.lunch_break_start);
+        const lunch_break_end = moment(req.body.lunch_break_end);
+        const tea_break_start = moment(req.body.tea_break_start);
+        const tea_break_end = moment(req.body.tea_break_end);
+
+        const lunch_break = lunch_break_end.diff(lunch_break_start);
+        const tea_break = tea_break_end.diff(tea_break_start);
+
+        const total_work_time = check_out_time.diff(check_in_time);
+        const total_work_time_without_breaks = total_work_time - lunch_break - tea_break;
+        
+        let total_work_time_without_breaks_in_hours = total_work_time_without_breaks / 1000 / 60 / 60;
+        total_work_time_without_breaks_in_hours = total_work_time_without_breaks_in_hours.toFixed(2);
+
+        const total_break_time = lunch_break + tea_break;
+        
+        let total_break_time_in_hours = total_break_time / 1000 / 60 / 60;
+        total_break_time_in_hours = total_break_time_in_hours.toFixed(2);
+
+        const activity = new Activity({
+            _id: new mongoose.Types.ObjectId(),
+            employee_id: req.body.employee_id,
+            employee_name: req.body.employee_name,
+            employee_email: req.body.employee_email,
+            date: req.body.date,
+            total_actual_work_time: total_work_time_without_breaks_in_hours,
+            total_break_time: total_break_time_in_hours
+        })
+        const result = await activity.save();
+        if(result){
+            res.status(201).json({
+                action: 'Create',
+                msg: 'Created Activity successfully',
+                body: result
+            });
+        }
+    }
+    catch(err){
+        res.status(500).json({
+            action: 'Create',
+            msg: err.message,
+            body: err
+        })
+    }
+})
+
+
+// get all employee activities
+router.get('/activity', async (req, res, next) => {
+    try{
+        const result = await Activity.find();
+        if(result){
+            res.status(200).json({
+                action: 'Get',
+                msg: 'Got all activities successfully',
+                body: result
+            });
+        }
+    }
+    catch(err){
+        res.status(500).json({
+            action: 'Get',
             msg: err.message,
             body: err
         })
