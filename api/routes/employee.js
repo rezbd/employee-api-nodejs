@@ -12,6 +12,8 @@ dotenv.config();
 const Employee = require('../models/employee');
 // employee activity schema
 const Activity = require('../models/dailyActivity');
+// employee working time schema
+const WorkingTime = require('../models/workingTime');
 
 
 // get all users
@@ -386,6 +388,55 @@ router.get('/activity', async (req, res, next) => {
             body: err
         })
     }
+})
+
+
+// route for calculating total working time of an employee
+router.post('/working', async(req, res, next) => {
+try{
+    let emp_activity = req.body.emp_activity;
+    let total_work_time = 0;
+    for (let i = 0; i < emp_activity.length; i++) {
+        let startTime = emp_activity[i].start;
+        let endTime = emp_activity[i].end;
+        let startHour = startTime.substring(0, 2);
+        let startMinute = startTime.substring(3, 5);
+        let endHour = endTime.substring(0, 2);
+        let endMinute = endTime.substring(3, 5);
+        let startTimeInMinutes = parseInt(startHour) * 60 + parseInt(startMinute);
+        let endTimeInMinutes = parseInt(endHour) * 60 + parseInt(endMinute);
+        let totalTimeInMinutes = endTimeInMinutes - startTimeInMinutes;
+        total_work_time += totalTimeInMinutes;
+    }
+    let totalHours = Math.floor(total_work_time / 60);
+    let totalMinutes = total_work_time % 60;
+    let totalWorkingTime = totalHours + ':' + totalMinutes;
+    
+    const working = new WorkingTime({
+        _id: new mongoose.Types.ObjectId(),
+        employee_id: req.body.employee_id,
+        employee_email: req.body.employee_email,
+        date: moment(req.body.date).format("YYYY-MM-DD"),
+        total_working_time: totalWorkingTime,
+        emp_activity: emp_activity
+    });
+
+    const result = await working.save();
+    if(result){
+        res.status(201).json({
+            action: 'Create',
+            msg: 'Created working time successfully',
+            body: result
+        });
+    }
+}
+catch(err){
+    res.status(500).json({
+        action: 'Create',
+        msg: err.message,
+        body: err
+    })
+}
 })
 
 
