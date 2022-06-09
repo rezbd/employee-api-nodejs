@@ -446,7 +446,7 @@ router.patch('/working/:id', async (req, res, next) => {
         const id = req.params.id;
         const activity = req.body;
         if(activity.end === ""){
-            const result = await WorkingTime.findByIdAndUpdate(
+            const result = await WorkingTime.updateOne(
             {_id: id},
             {
                 $push: {
@@ -463,7 +463,7 @@ router.patch('/working/:id', async (req, res, next) => {
     // else update the end time of the activity
     else{
         const result = await WorkingTime.updateOne(
-            {_id: id, "emp_activity.start": activity.start},
+            {_id: id, "emp_activity.end": ""},
             {$set: {
                 "emp_activity.$.end": activity.end
             }}
