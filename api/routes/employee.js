@@ -445,35 +445,22 @@ router.patch('/working/:id', async (req, res, next) => {
     try{
         const id = req.params.id;
         const activity = req.body;
+        let result
         if(activity.end === ""){
-            const result = await WorkingTime.updateOne(
+            result = await WorkingTime.updateOne(
             {_id: id},
-            {
-                $push: {
-                    emp_activity: activity
-                }
-            }
-        );
-        res.status(200).json({
-            action: 'Update',
-            msg: 'Updated working time successfully',
-            body: result
-        });
-    }
-    // else update the end time of the activity
-    else{
-        const result = await WorkingTime.updateOne(
+            {$push: {emp_activity: activity}}
+        );}
+        else{
+            result = await WorkingTime.updateOne(
             {_id: id, "emp_activity.end": ""},
-            {$set: {
-                "emp_activity.$.end": activity.end
-            }}
+            {$set: {"emp_activity.$.end": activity.end}}
         );
+        }
         res.status(200).json({
             action: 'Update',
-            msg: 'Updated working time successfully',
-            body: result
-        });
-    }        
+            msg: 'Updated working time successfully'
+        });        
     }
     catch(err){
         res.status(500).json({
