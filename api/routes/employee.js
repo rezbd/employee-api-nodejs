@@ -394,8 +394,8 @@ router.get('/activity', async (req, res, next) => {
 // route for calculating total working time of an employee
 router.post('/working', async(req, res, next) => {
 try{
-    let emp_activity = req.body.emp_activity;
-    let total_work_time = 0;
+    let emp_activity = [];
+    /* let total_work_time = 0;
     for (let i = 0; i < emp_activity.length; i++) {
         let startTime = emp_activity[i].start;
         let endTime = emp_activity[i].end;
@@ -410,14 +410,14 @@ try{
     }
     let totalHours = Math.floor(total_work_time / 60);
     let totalMinutes = total_work_time % 60;
-    let totalWorkingTime = totalHours + ':' + totalMinutes;
+    let totalWorkingTime = totalHours + ':' + totalMinutes; */
     
     const working = new WorkingTime({
         _id: new mongoose.Types.ObjectId(),
         employee_id: req.body.employee_id,
         employee_email: req.body.employee_email,
         date: moment(req.body.date).format("YYYY-MM-DD"),
-        total_working_time: totalWorkingTime,
+        // total_working_time: totalWorkingTime,
         emp_activity: emp_activity
     });
 
@@ -437,6 +437,86 @@ catch(err){
         body: err
     })
 }
+})
+
+
+// router to update working activities
+router.patch('/working/:id', async (req, res, next) => {
+    const id = req.params.id;
+    const activity = req.body;
+    try{
+        const result = await WorkingTime.findByIdAndUpdate(
+            {_id: id},
+            {
+                $push: {
+                    emp_activity: activity
+                }
+            }
+        );
+        if(result){
+            res.status(200).json({
+                action: 'Update',
+                msg: 'Updated working time successfully',
+                body: result
+            });
+        }
+    }
+    catch(err){
+        res.status(500).json({
+            action: 'Update',
+            msg: err.message,
+            body: err
+        })
+    }
+})
+
+
+// get all working activities of an employee by id
+router.get('/working/:id', async (req, res, next) => {
+    const id = req.params.id;
+    try{
+        const employeeActivity = await WorkingTime.find({_id: id});
+        const emp_activity = employeeActivity[0].emp_activity;
+        let total_work_time = 0;
+        for (let i = 0; i < emp_activity.length; i++) {
+        let startTime = emp_activity[i].start;
+        let endTime = emp_activity[i].end;
+        let startHour = startTime.substring(0, 2);
+        let startMinute = startTime.substring(3, 5);
+        let endHour = endTime.substring(0, 2);
+        let endMinute = endTime.substring(3, 5);
+        let startTimeInMinutes = parseInt(startHour) * 60 + parseInt(startMinute);
+        let endTimeInMinutes = parseInt(endHour) * 60 + parseInt(endMinute);
+        let totalTimeInMinutes = endTimeInMinutes - startTimeInMinutes;
+        total_work_time += totalTimeInMinutes;
+    }
+    let totalHours = Math.floor(total_work_time / 60);
+    let totalMinutes = total_work_time % 60;
+    let totalWorkingTime = `${totalHours} hours and ${totalMinutes} minutes`;
+
+    res.status(200).json({
+        action: 'Get',
+        msg: 'Got all working time successfully',
+        body: {
+            employeeActivity: employeeActivity,
+            totalWorkingTime: totalWorkingTime
+        }
+    });
+/*         if(result){
+            res.status(200).json({
+                action: 'Get',
+                msg: 'Got all working time successfully',
+                body: result
+            });
+        } */
+    }
+    catch(err){
+        res.status(500).json({
+            action: 'Get',
+            msg: err.message,
+            body: err
+        })
+    }
 })
 
 
