@@ -442,10 +442,11 @@ catch(err){
 
 // router to update working activities
 router.patch('/working/:id', async (req, res, next) => {
-    const id = req.params.id;
-    const activity = req.body;
     try{
-        const result = await WorkingTime.findByIdAndUpdate(
+        const id = req.params.id;
+        const activity = req.body;
+        if(activity.end === ""){
+            const result = await WorkingTime.findByIdAndUpdate(
             {_id: id},
             {
                 $push: {
@@ -453,13 +454,28 @@ router.patch('/working/:id', async (req, res, next) => {
                 }
             }
         );
-        if(result){
-            res.status(200).json({
-                action: 'Update',
-                msg: 'Updated working time successfully',
-                body: result
-            });
-        }
+        res.status(200).json({
+            action: 'Update',
+            msg: 'Updated working time successfully',
+            body: result
+        });
+    }
+    // else update the end time of the activity
+    else{
+        const result = await WorkingTime.findByIdAndUpdate(
+            {_id: id},
+            {
+                $set: {
+                    emp_activity: activity
+                }
+            }
+        );
+        res.status(200).json({
+            action: 'Update',
+            msg: 'Updated working time successfully',
+            body: result
+        });
+    }        
     }
     catch(err){
         res.status(500).json({
